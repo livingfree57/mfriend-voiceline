@@ -33,11 +33,33 @@ messages = {
 @app.route("/voice", methods=["POST"])
 def voice():
     response = VoiceResponse()
-    gather = Gather(num_digits=1, action="/handle-language", method="POST")
-    gather.say("Welcome to MFriend. For English, press 1. Para español, marque 2. 한국어를 원하시면 3번을 누르세요. العربية، اضغط 4.", language="en-US")
-    response.append(gather)
+    gather = response.gather(num_digits=2, action="/handle-language", method="POST")
+
+    gather.say(
+       "Welcome to MFriend. "
+        "English, press 1. "
+        "Español, marque 2. "
+        "한국어는 3번을 누르세요. "
+        "العربية، اضغط على الرقم 4. "
+        "日本語は5番を押してください。 "
+        "中文，请按6号键。 "
+        "हिंदी के लिए 7 दबाएँ। "
+        "Tiếng Việt, bấm phím 8. "
+        "Русский, нажмите цифру 9. "
+        "Українська, натисніть 10. "
+        "Deutsch, drücken Sie die 11. "
+        "Français, appuyez sur le 12. "
+        "Türkçe için 13’e basın. "
+        "Português, pressione o número 14. "
+        "Bahasa Indonesia, tekan angka 15. "
+        "To repeat this menu, press 0.",
+        language="en-US"
+    )
+
+    
     response.redirect("/voice")
     return Response(str(response), mimetype="application/xml")
+
 
 @app.route("/handle-language", methods=["POST"])
 def handle_language():
@@ -71,4 +93,7 @@ def serve_audio(filename):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5050)
+    import os
+    port = int(os.environ.get("PORT", 5050))  # fallback to 5050 for local dev
+    app.run(host="0.0.0.0", port=port)
+
