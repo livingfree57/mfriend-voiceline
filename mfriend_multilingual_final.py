@@ -36,29 +36,19 @@ def voice():
     gather = response.gather(num_digits=2, action="/handle-language", method="POST")
 
     gather.say(
-       "Welcome to MFriend. "
-        "English, press 1. "
-        "Español, marque 2. "
-        "한국어는 3번을 누르세요. "
-        "العربية، اضغط على الرقم 4. "
-        "日本語は5番を押してください。 "
-        "中文，请按6号键。 "
-        "हिंदी के लिए 7 दबाएँ। "
-        "Tiếng Việt, bấm phím 8. "
-        "Русский, нажмите цифру 9. "
-        "Українська, натисніть 10. "
-        "Deutsch, drücken Sie die 11. "
-        "Français, appuyez sur le 12. "
-        "Türkçe için 13’e basın. "
-        "Português, pressione o número 14. "
-        "Bahasa Indonesia, tekan angka 15. "
-        "To repeat this menu, press 0.",
+        "Welcome to MFriend. "
+        "For English, press 1. For Spanish, press 2. For Korean, press 3. For Arabic, press 4. "
+        "For Japanese, press 5. For Chinese, press 6. For Hindi, press 7. "
+        "For Vietnamese, press 8. For Russian, press 9. For Ukrainian, press 10. "
+        "For German, press 11. For French, press 12. For Turkish, press 13. "
+        "For Portuguese, press 14. For Indonesian, press 15. "
+        "To hear this menu again, press 0.",
         language="en-US"
     )
 
-    
     response.redirect("/voice")
     return Response(str(response), mimetype="application/xml")
+
 
 
 @app.route("/handle-language", methods=["POST"])
