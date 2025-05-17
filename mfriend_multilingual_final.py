@@ -1,10 +1,14 @@
 from flask import Flask, request, Response, send_file
 from twilio.twiml.voice_response import VoiceResponse, Gather
-from elevenlabs import generate_audio, save, set_api_key
+from elevenlabs.client import ElevenLabs
+from dotenv import load_dotenv
+load_dotenv()
+
+from elevenlabs import VoiceSettings
 import os
 
 app = Flask(__name__)
-set_api_key(os.environ["ELEVEN_API_KEY"])
+client = ElevenLabs(api_key=os.environ["ELEVEN_API_KEY"])
 
 messages = {
     "1": ("Hello. I am MFriend. You are not alone. I am here to listen.", "en-US", "JUAXJdmq5qos1R1etewe"),
@@ -41,13 +45,20 @@ def handle_language():
     response = VoiceResponse()
 
     if digit_pressed in messages:
-        text, lang, voice = messages[digit_pressed]
+        text, lang, voice_id = messages[digit_pressed]
     else:
-        text, lang, voice = messages["fallback"]
+        text, lang, voice_id = messages["fallback"]
 
-    audio = generate_audio(text=text, voice=voice, model="eleven_multilingual_v2")
+    audio = client.generate(
+        text=text,
+        voice=voice_id,
+        model="eleven_multilingual_v2",
+        voice_settings=VoiceSettings(stability=0.5, similarity_boost=0.5)
+    )
+
     filename = f"static/response_{digit_pressed if digit_pressed in messages else 'fallback'}.mp3"
-    save(audio, filename)
+    with open(filename, "wb") as f:
+        f.write(audio)
 
     response.play(request.host_url + filename)
     if digit_pressed == "0" or digit_pressed not in messages:
