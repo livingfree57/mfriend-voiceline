@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: mfriend-voiceline
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python mfriend_multilingual_final.py
+    envVars:
+      - key: FLASK_ENV
+        value: production
