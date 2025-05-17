@@ -1,10 +1,10 @@
 from flask import Flask, request, Response, send_file
 from twilio.twiml.voice_response import VoiceResponse, Gather
-from elevenlabs import generate, save, set_api_key
+from elevenlabs import generate_audio, save, set_api_key
 import os
 
 app = Flask(__name__)
-set_api_key("YOUR_ELEVENLABS_API_KEY")  # Replace with your actual API key
+set_api_key(os.environ["ELEVEN_API_KEY"])
 
 messages = {
     "1": ("Hello. I am MFriend. You are not alone. I am here to listen.", "en-US", "JUAXJdmq5qos1R1etewe"),
@@ -45,7 +45,7 @@ def handle_language():
     else:
         text, lang, voice = messages["fallback"]
 
-    audio = generate(text=text, voice=voice, model="eleven_multilingual_v1")
+    audio = generate_audio(text=text, voice=voice, model="eleven_multilingual_v2")
     filename = f"static/response_{digit_pressed if digit_pressed in messages else 'fallback'}.mp3"
     save(audio, filename)
 
